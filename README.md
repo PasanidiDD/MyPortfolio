@@ -1,1 +1,6 @@
-# MyPortolio
+# Портфолио: Инженера по тестированию-Пасаниди Дмитрия
+
+Привет,я Пасаниди Дмитрий,инженер по тестированию из России.В этом репозитории вы можете найти некоторые из моих проектов, выполненных во время обучения и практики.
+
+Jira,qase.io,SQL, Postman,Fiddler, Swagger, Trello,
+SoapUI, Android Studio, xCode, Charles, Git, Chrome DevTools
