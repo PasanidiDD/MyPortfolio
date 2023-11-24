@@ -48,9 +48,7 @@
 </ol>
 
 <p>Как решал: Провел тестирование API и сделал Postman-коллекцию</p>
-```json
-<../../API/курсовая №2.postman_collection.json>
-```
+<курсовая №2.postman_collection.json>
 <p>Провел тест-ран и дополнил отчет о тестировании.</p>
 
 >  <a href="https://pasanidi.atlassian.net/wiki/spaces/~712020ec55201464d74af58c7c31dc369e64e5/pages/33316/1-+2-+.">Ссылка на проект</a>
