@@ -1,0 +1,768 @@
+{
+	"info": {
+		"_postman_id": "4045cf0c-0094-4cb9-824f-7812db9216da",
+		"name": "курсовая №2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28832240"
+	},
+	"item": [
+		{
+			"name": "тест-кейс блок 1",
+			"item": [
+				{
+					"name": "Создание личного события с валидными данными в будущем",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var key = \"MyID\"\r",
+									"var value = pm.response.json().data.payload.id\r",
+									"pm.collectionVariables.set(key, value)\r",
+									"\r",
+									"var key = \"time\"\r",
+									"var value = pm.response.json().data.startAt\r",
+									"pm.collectionVariables.set(key, value)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{global}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"backgroundColor\": \"#F4F5F6\",\r\n    \"color\": \"#81888D\",\r\n    \"description\": \"\",\r\n    \"title\": \"день рождения дочери\",\r\n    \"startAt\": \"2023-09-13T03:00:00+03:00\",\r\n    \"endAt\": \"2023-09-13T03:30:00+03:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/createPersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"createPersonal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "изменение времени личного события",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var key = \"MyID\"\r",
+									"var value = pm.response.json().data.payload.id\r",
+									"pm.collectionVariables.set(key, value)\r",
+									"\r",
+									"var key = \"time\"\r",
+									"var value = pm.response.json().data.startAt\r",
+									"pm.collectionVariables.set(key, value)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{global}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"backgroundColor\": \"#F4F5F6\",\r\n    \"color\": \"#81888D\",\r\n    \"description\": \"\",\r\n    \"title\": \"день рождения дочери !\",\r\n    \"startAt\": \"2023-09-13T15:00:00+03:00\",\r\n    \"endAt\": \"2023-09-13T15:30:00+03:00\",\r\n    \"id\": {{MyID}},\r\n    \"oldStartAt\": \"{{time}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/updatePersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"updatePersonal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "удаление личного события после изменения времени",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var key = \"MyID\";\r",
+									"var value = pm.response.json().data;\r",
+									"if (value) {\r",
+									"    value = value.payload.id;\r",
+									"}\r",
+									"pm.collectionVariables.set(key, value);\r",
+									"\r",
+									"var key = \"time\";\r",
+									"var value = pm.response.json().data;\r",
+									"if (value) {\r",
+									"    value = value.startAt;\r",
+									"}\r",
+									"pm.collectionVariables.set(key, value);\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has the required fields - data, errors\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData).to.have.property('data');\r",
+									"    pm.expect(responseData).to.have.property('errors');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"The 'data' field should be null\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData.data).to.be.null;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Verify the presence and count of errors array\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.errors).to.exist.and.to.be.an('array');\r",
+									"    pm.expect(responseData.errors).to.have.lengthOf(1);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"The 'message' field in the first error object is a non-empty string\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData.errors[0].error.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{global}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{MyID}},\r\n    \"startAt\": \"{{time}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/removePersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"removePersonal"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "тест-кейс блок 2",
+			"item": [
+				{
+					"name": "Создание нового события с валидным названием прошлым числом (месяцем)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var key = \"MyID\"\r",
+									"var value = pm.response.json().data.payload.id\r",
+									"pm.collectionVariables.set(key, value)\r",
+									"\r",
+									"var key = \"time\"\r",
+									"var value = pm.response.json().data.startAt\r",
+									"pm.collectionVariables.set(key, value)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{global}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"backgroundColor\": \"#F4F5F6\",\r\n    \"color\": \"#FAC641\",\r\n    \"description\": \"день рождения дочки 3 месяца\",\r\n    \"title\": \"birthday\",\r\n    \"startAt\": \"2023-05-17T03:00:00+03:00\",\r\n    \"endAt\": \"2023-05-17T03:30:00+03:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/createPersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"createPersonal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "изменение даты события",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var key = \"MyID\"\r",
+									"var value = pm.response.json().data.payload.id\r",
+									"pm.collectionVariables.set(key, value)\r",
+									"\r",
+									"var key = \"time\"\r",
+									"var value = pm.response.json().data.startAt\r",
+									"pm.collectionVariables.set(key, value)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{global}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"backgroundColor\": \"#F4F5F6\",\r\n    \"color\": \"#81888D\",\r\n    \"description\": \"день рождения дочки 3 месяца\",\r\n    \"title\": \"birthday\",\r\n    \"startAt\": \"2023-08-02T03:00:00+03:00\",\r\n    \"endAt\": \"2023-08-02T03:30:00+03:00\",\r\n    \"id\": {{MyID}},\r\n    \"oldStartAt\": \"{{time}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/updatePersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"updatePersonal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "удаление личного события после изменения даты",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var key = \"MyID\"\r",
+									"var value = pm.response.json().data.payload.id\r",
+									"pm.collectionVariables.set(key, value)\r",
+									"\r",
+									"var key = \"time\"\r",
+									"var value = pm.response.json().data.startAt\r",
+									"pm.collectionVariables.set(key, value)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{global}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{MyID}},\r\n    \"startAt\": \"{{time}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/removePersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"removePersonal"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "тест-кейс блок 3",
+			"item": [
+				{
+					"name": "создание личного события с валидными данными",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var key = \"MyID\"\r",
+									"var value = pm.response.json().data.payload.id\r",
+									"pm.collectionVariables.set(key, value)\r",
+									"\r",
+									"var key = \"time\"\r",
+									"var value = pm.response.json().data.startAt\r",
+									"pm.collectionVariables.set(key, value)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{global}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"backgroundColor\": \"#F4F5F6\",\r\n    \"color\": \"#FAC641\",\r\n    \"description\": \"daughter's birthday 3 months\",\r\n    \"title\": \"день рождения дочери\",\r\n    \"startAt\": \"2023-09-01T20:00:00+03:00\",\r\n    \"endAt\": \"2023-09-01T20:30:00+03:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/createPersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"createPersonal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "изменение цвета и описания события",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var key = \"MyID\"\r",
+									"var value = pm.response.json().data.payload.id\r",
+									"pm.collectionVariables.set(key, value)\r",
+									"\r",
+									"var key = \"time\"\r",
+									"var value = pm.response.json().data.startAt\r",
+									"pm.collectionVariables.set(key, value)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{global}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"backgroundColor\": \"#F4F5F6\",\r\n    \"color\": \"#81888D\",\r\n    \"description\": \"день рождения дочки 7 месяца\",\r\n    \"title\": \"днюха\",\r\n    \"startAt\": \"2023-09-01T20:30:00+03:00\",\r\n    \"endAt\": \"2023-09-01T21:00:00+03:00\",\r\n    \"id\": {{MyID}},\r\n    \"oldStartAt\": \"{{time}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/updatePersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"updatePersonal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "удаление личного события после изменения цвета и описания события",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var key = \"MyID\"\r",
+									"var value = pm.response.json().data.payload.id\r",
+									"pm.collectionVariables.set(key, value)\r",
+									"\r",
+									"var key = \"time\"\r",
+									"var value = pm.response.json().data.startAt\r",
+									"pm.collectionVariables.set(key, value)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{global}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{MyID}},\r\n    \"startAt\": \"{{time}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/removePersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"removePersonal"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "не валидные проверки",
+			"item": [
+				{
+					"name": "Удаление несуществующего события(повторное удаление,только что удаленного события)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var key = \"MyID\"\r",
+									"var value = pm.response.json().data?.payload?.id\r",
+									"pm.collectionVariables.set(key, value)\r",
+									"\r",
+									"var key = \"time\"\r",
+									"var value = pm.response.json().data?.startAt\r",
+									"pm.collectionVariables.set(key, value)\r",
+									"\r",
+									"pm.test(\"Status code is 400 or 4XX\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 403, 405, 422], \"Это баг\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{global}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{MyID}},\r\n    \"startAt\": \"{{time}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/removePersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"removePersonal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "создание личного события с некорректной датой",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var key = \"MyID\";\r",
+									"var value = pm.response.json().data?.payload?.id;\r",
+									"pm.collectionVariables.set(key, value);\r",
+									"\r",
+									"var key = \"time\";\r",
+									"var value = pm.response.json().data?.startAt;\r",
+									"pm.collectionVariables.set(key, value);\r",
+									"\r",
+									"pm.test(\"Status code is 400 or 4XX\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 403, 405, 422], \"Это баг\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{global}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"backgroundColor\": \"#F4F5F6\",\r\n    \"color\": \"#FAC641\",\r\n    \"description\": \"\",\r\n    \"title\": \"урок 1\",\r\n    \"startAt\": \"1900-05-17T03:00:00+03:00\",\r\n    \"endAt\": \"1900-05-17T03:30:00+03:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/createPersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"createPersonal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "создание личного события без установки даты",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var key = \"MyID\";\r",
+									"var value = pm.response.json().data?.payload?.id;\r",
+									"pm.collectionVariables.set(key, value);\r",
+									"\r",
+									"var key = \"time\";\r",
+									"var value = pm.response.json().data?.startAt;\r",
+									"pm.collectionVariables.set(key, value);\r",
+									"\r",
+									"pm.test(\"Status code is 400 or 4XX\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 403, 405, 422], \"Это баг\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{global}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"backgroundColor\": \"#F4F5F6\",\r\n    \"color\": \"#FAC641\",\r\n    \"description\": \"daughter's birthday 3 months\",\r\n    \"title\": \"день рождения дочери\",\r\n    \"startAt\": \"T03:00:00+03:00\",\r\n    \"endAt\": \"T03:30:00+03:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/createPersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"createPersonal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "создание личного события c несуществующим цветом",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var key = \"MyID\";\r",
+									"var value = pm.response.json().data?.payload?.id;\r",
+									"pm.collectionVariables.set(key, value);\r",
+									"\r",
+									"var key = \"time\";\r",
+									"var value = pm.response.json().data?.startAt;\r",
+									"pm.collectionVariables.set(key, value);\r",
+									"\r",
+									"pm.test(\"Status code is 400 or 4XX\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 403, 405, 422], \"Это баг\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{global}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"backgroundColor\": \"#F4F5F6\",\r\n    \"color\": \"#212121\",\r\n    \"description\": \"\",\r\n    \"title\": \"день рождения дочери\",\r\n    \"startAt\": \"2023-09-13T03:00:00+03:00\",\r\n    \"endAt\": \"2023-09-13T03:30:00+03:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/createPersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"createPersonal"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://api-teachers.skyeng.ru/v2/schedule",
+			"type": "string"
+		},
+		{
+			"key": "MyID",
+			"value": ""
+		},
+		{
+			"key": "time",
+			"value": null
+		},
+		{
+			"key": "global",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1c2VySWQiOjE0NTk2OTMzLCJpZGVudGl0eSI6InRlc3QudHN0MzE3QHNreWVuZy5ydSIsImlkZW50aXR5TG9naW4iOm51bGwsImlkZW50aXR5RW1haWwiOiJ0ZXN0LnRzdDMxN0Bza3llbmcucnUiLCJpZGVudGl0eVBob25lIjpudWxsLCJuYW1lIjoiXHUwNDE4XHUwNDMzXHUwNDNlXHUwNDQwXHUwNDRjIiwic3VybmFtZSI6Ilx1MDQxMlx1MDQzOFx1MDQ0MFx1MDQ0N1x1MDQzOFx1MDQzYSIsImVtYWlsIjoidGVzdC50c3QzMTdAc2t5ZW5nLnJ1IiwidWlMYW5ndWFnZSI6InJ1IiwibG9jYWxlIjoicnUiLCJzZXJ2aWNlTG9jYWxlIjpudWxsLCJ1YXMiOjMwLCJqd3RUeXBlIjoxLCJqdGkiOiJ3a2RKblhCbHZ2NzFSa0xkVFR6Vm5xQ0RaalFvWDFRVCIsImJyYW5kIjpudWxsLCJleHAiOjE2OTQ1NzM0NzQsImF2YXRhclVybCI6Imh0dHBzOlwvXC9hdXRoLWF2YXRhcnMtc2t5ZW5nLmltZ2l4Lm5ldFwvMTQ1OTY5MzNcLzk4ZjZiZWI1LWYwN2ItNDFlYi04YmMyLTQ1NzE0MGE3NDg4Mz9hdXRvPWZvcm1hdCUyQ2VuaGFuY2UmZml0PWNyb3AmaD0yMDAmaXhsaWI9cGhwLTIuMS4xJnE9NzUmc2F0PTgmc2hhcnA9MTAmdmliPTgmdz0yMDAiLCJiaXJ0aGRheSI6IjE5NzAtMTItMzEiLCJhSXNTdHJvbmciOnRydWUsImFUeXBlIjoiVVNFUk5BTUVfUEFTU1dPUkQiLCJhVGltZSI6MTY5NDQ4NzA1MSwicm9sZXMiOlsiUk9MRV9URUFDSEVSX0NBTkRJREFURSIsIlJPTEVfVEVBQ0hFUl9DQU5ESURBVEVfQkFTRV9BQ0NFU1MiLCJST0xFX1RUQ19VU0FHRSIsIlJPTEVfVklNQk9YX1RFQUNIRVJfVVNBR0UiLCJST0xFX1RFQUNIRVIiLCJST0xFX0NSTTJfVEVBQ0hFUl9BQ0NFU1MiLCJST0xFX01BVEhfVEVBQ0hFUiIsIlJPTEVfTUFUSF9DT05URU5UX1RIRU1FX1ZJRVciXX0.pGPgUv9LL2djp9VNqexyls3-nWEJap99dVfg6O3CpMACJ3HJEI9amOklAUN1oimxg5kgYmJyULgy9TIPBRlZc_V9xVqu4icB8rfHOybznUb2c2oGI3nmpuwGU378t1VwcS50yRkprD-38CQQ-uedqmYrAGGtZy1oLitbHb5AUq0rLGVzawl_pr1c5ISHeYoioQ53LJCPjLro0wN2PSTqkZrBTvCwtlHJmAZZTBo14qz0JYldXMQ4TXU6CxQ8Ycu3alN5IrR1mZDP1uFNVcqfWiB5zId8qf-5ALgAGzCx3ree3-GsElgcWqjZfloazKyZCK3H7d_SNQ-6PvVdz6UZgVXyIGU_5UlvLpUD7VEToev3KYYaKYtsnl3w0RmqtpVbuB2d-bg6CW_OlOw1gUYMWQrl4KPq-e283woI-72cI4M50FDkfQQ8gtV8smCgP0W5WMuY_VA2crF6PO-Ipd6J8mEnpjCjIAYKEzgnPIQ0Kap8uBJCfcgGhPw0EtH19qjVFfh_qanIMFKnGyHwhN9ep8xF0FZg08ucVcpkM9vHYKjkXQGVieNWmUM_9dQSIDwZ2YTEKaHWOiNMNIxUOFYILWVVWwOXukrRifiiRHgQSYKKjSlrTC8vAB_7zrZuAKJI6ozR_BB8FirpMBpKI7U_uC8aET23O8Yvp8KjC8BudIk",
+			"type": "string"
+		}
+	]
+}
