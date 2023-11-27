@@ -64,5 +64,5 @@
 
 
 ## Контактная информация
-- Email: dimitris.pasanidis@email.com
+- Email: dimitris.pasanidis@mail.com
 - VK: https://vk.com/pasanidi
